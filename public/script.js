@@ -15,13 +15,13 @@ navigator.webkitGetUserMedia ||
 navigator.mozGetUserMedia;
 
 
-let myVideoStream
+let myVideoStream;
 
 navigator.mediaDevices.getUserMedia({
     video: true,
-    audio: false
+    audio: true
 }).then(stream => {
-    myVideoStream = stream;
+    myVideoStream = stream;                                 //my video stream
     addVideoStream(myVideo, stream);
 
     peer.on("call", call => {
@@ -86,4 +86,63 @@ let text = $("input");
 const scrollToBottom = () => {                                           //to ensure chat window has a scroll function
     let d = $(".main__chat_window");
     d.scrollTop(d.prop("scrollHeight"));
+}
+
+const muteUnmute = () => {
+    const enabled = myVideoStream.getAudioTracks()[0].enabled;
+    if (enabled) {
+        myVideoStream.getAudioTracks()[0].enabled = false;
+        setUnmuteButton();
+    } else {
+        setMuteButton();
+        myVideoStream.getAudioTracks()[0].enabled = true;
+    }
+}
+
+const setMuteButton = () => {
+    const html = `
+        <i class="fas fa-microphone"></i>
+        <span>Mute</span>
+    `
+
+    document.querySelector(".main__mute_button").innerHTML = html;
+}
+
+const setUnmuteButton = () => {
+    const html = `
+        <i class="unmute fas fa-microphone-slash"></i>
+        <span>Unmute</span>
+    `
+
+    document.querySelector(".main__mute_button").innerHTML = html;
+}
+
+const playStop = () => {
+    console.log("object");
+    let enabled = myVideoStream.getVideoTracks()[0].enabled;
+    if (enabled) {
+        myVideoStream.getVideoTracks()[0].enabled = false;
+        setPlayVideo();
+    } else {
+        setStopVideo();
+        myVideoStream.getVideoTracks()[0].enabled = true;
+    }
+}
+
+const setStopVideo = () => {
+    const html = `
+    <i class="fas fa-video"></i>
+    <span>Stop Video</span>
+    `
+
+    document.querySelector(".main__video_button").innerHTML = html;
+}
+
+const setPlayVideo = () => {
+    const html = `
+    <i class="stop fas fa-video-slash"></i>
+    <span>Play Video</span>
+    `
+
+    document.querySelector(".main__video_button").innerHTML = html;
 }
